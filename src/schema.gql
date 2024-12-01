@@ -1,0 +1,152 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+}
+
+type SignInResponse {
+  success: Boolean!
+  message: String!
+}
+
+type ProjectGraphQL {
+  id: ID!
+  name: String!
+  description: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  createdBy: User!
+  status: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Access {
+  projectId: ID!
+  createdBy: ID!
+  forUser: ID!
+  canCreate: Boolean!
+  canAssign: Boolean!
+  canView: Boolean!
+}
+
+type PartialTaskGraphQL {
+  id: ID
+  title: String
+  description: String
+  status: String
+  createdBy: ID
+  assignees: [ID!]
+  projectId: ID
+}
+
+type CommentGraphQL {
+  id: ID!
+  message: String!
+  createdBy: ID!
+  taskId: ID!
+  createdAt: DateTime!
+}
+
+type Query {
+  getAllUsers: [User!]!
+  getAllProjects(createdBy: String): [ProjectGraphQL!]!
+  getProject(id: String!): ProjectGraphQL!
+  getAllTasks(projectId: String!): [PartialTaskGraphQL!]!
+  getTask(id: String!, projectId: String!): PartialTaskGraphQL!
+  getAccess(projectId: String!, forUser: String!): Access!
+  getCommentsByTask(taskId: String!): [CommentGraphQL!]!
+}
+
+type Mutation {
+  createNotification(projectId: String!, userId: String!, message: String!): String!
+  broadcastNotification(message: String!): String!
+  createUser(createUserInput: CreateUserInput!): User!
+  signIn(signInInput: SignInInput!): SignInResponse!
+  signOut: Boolean!
+  createProject(createProjectInput: CreateProjectInput!): ProjectGraphQL!
+  updateProject(updateProjectInput: UpdateProjectInput!): ProjectGraphQL!
+  removeProject(projectId: String!): ProjectGraphQL!
+  createTask(createTaskInput: CreateTaskInput!): PartialTaskGraphQL!
+  updateTask(id: String!, updateTaskInput: UpdateTaskInput!, projectId: String!): PartialTaskGraphQL!
+  removeTask(id: String!): PartialTaskGraphQL!
+  createAccess(createAccessInput: CreateAccessInput!): Access!
+  updateAccess(projectId: String!, forUser: String!, updateAccessInput: UpdateAccessInput!): Access!
+  createComment(createCommentInput: CreateCommentInput!): CommentGraphQL!
+  deleteComment(id: String!): Boolean!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+input CreateProjectInput {
+  name: String!
+  description: String
+  status: String
+  startDate: DateTime!
+  endDate: DateTime
+  createdBy: String!
+}
+
+input UpdateProjectInput {
+  name: String
+  description: String
+  status: String
+  startDate: DateTime
+  endDate: DateTime
+  createdBy: String
+  id: ID!
+}
+
+input CreateTaskInput {
+  title: String!
+  description: String!
+  status: String
+  createdBy: ID
+  assignees: [ID!]
+  projectId: ID!
+}
+
+input UpdateTaskInput {
+  title: String
+  description: String
+  status: String
+  createdBy: ID
+  assignees: [ID!]
+  projectId: ID
+}
+
+input CreateAccessInput {
+  projectId: String!
+  createdBy: String!
+  forUser: String!
+  canCreate: Boolean!
+  canAssign: Boolean!
+}
+
+input UpdateAccessInput {
+  canCreate: Boolean!
+  canAssign: Boolean!
+  canView: Boolean!
+}
+
+input CreateCommentInput {
+  message: String!
+  taskId: ID!
+}
