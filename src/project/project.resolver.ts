@@ -6,10 +6,13 @@ import { UpdateProjectInput } from './dto/create-project.input/update-project-in
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { ProjectOwnerGuard } from './guards/project-owner/project-owner.guard';
+import { CacheService } from 'src/cache/cache.service';
 
 @Resolver(() => ProjectGraphQL)
 export class ProjectResolver {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(private readonly projectService: ProjectService,
+    private readonly cacheService:CacheService
+  ) {}
 
   @Mutation(() => ProjectGraphQL)
   async createProject(
@@ -23,12 +26,21 @@ export class ProjectResolver {
   async getAllProjects(
     @Args('createdBy', { nullable: true }) createdBy?: string,
   ): Promise<Project[]> {
+    const cacheKey = "getAllProjects"+createdBy;
+    const cachedProjects = await this.cacheService.getCache(cacheKey);
+    if (cachedProjects) {
+      console.log('Returning cached projects');
+      return cachedProjects; // Return cached data
+    }
+    
     return await this.projectService.findAll(createdBy);
   }
 
   @Query(() => ProjectGraphQL)
   @UseGuards(AuthGuard)
   async getProject(@Args('id') id: string): Promise<Project> {
+    const cacheKey = 'project'+id;
+
     return this.projectService.findOne(id);
   }
 

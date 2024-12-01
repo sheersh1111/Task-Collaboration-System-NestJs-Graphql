@@ -6,15 +6,25 @@ import { CreateUserInput } from './dto/create-user.input/create-user.input';
 import { UserDTO } from './user-dto/user-dto';
 import { SignInInput, SignInResponse } from './dto/sign-in.input/sign-in.input/sign-in.input';
 import { Response } from 'express';
+import { CacheService } from 'src/cache/cache.service';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+    private readonly cacheService:CacheService
+  ) {}
 
   // Query to get all users
   @Query(() => [User])
   async getAllUsers(): Promise<UserDTO[]> {
+    const cacheKey = 'allUsers';
+    const cachedUsers = await this.cacheService.getCache(cacheKey);
+    if (cachedUsers) {
+      console.log('Returning cached users');
+      return cachedUsers.map(user => new UserDTO(user)); // Return cached data
+    }
     const users = await this.userService.findAll(); // Fetch users
+    this.cacheService.setCache(cacheKey, users); 
     return users.map(user => new UserDTO(user));
   }
 

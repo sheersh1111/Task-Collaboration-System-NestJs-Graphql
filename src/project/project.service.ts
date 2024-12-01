@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project, ProjectSchema } from './schemas/project.schema/project.schema';
@@ -6,7 +6,8 @@ import { CreateProjectInput } from './dto/create-project.input/create-project-in
 
 @Injectable()
 export class ProjectService {
-  constructor(@InjectModel('Project') private ProjectSchema: Model<Project>) {}
+  constructor(@InjectModel('Project') private ProjectSchema: Model<Project>
+) {}
 
   async create(createProjectInput: CreateProjectInput): Promise<Project> {
     const createdProject = new this.ProjectSchema(createProjectInput);
