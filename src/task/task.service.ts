@@ -10,19 +10,26 @@ export class TaskService {
 
   async create(createTaskInput: CreateTaskInput): Promise<Task> {
     const task = new this.taskModel(createTaskInput);
-    return task.save();
+
+  // Save the task first and await the result
+  await task.save();
+
+  // Populate the 'createdBy', 'assignees', and 'projectId' fields
+  await (await (await task.populate('createdBy')).populate('assignees')).populate('projectId')
+
+  return task;
   }
 
   async findAllByProjectId(projectId: string): Promise<Task[]> {
-    return this.taskModel.find({ projectId }).populate('assignees').exec();
+    return await this.taskModel.find({ projectId }).populate('createdBy').populate('projectId').populate('assignees').exec();
   }
 
   async findAll(): Promise<Task[]> {
-    return this.taskModel.find().populate('assignees').exec();
+    return this.taskModel.find().populate('createdBy').populate('projectId').populate('assignees').exec();
   }
 
   async findOne(id: string): Promise<Task> {
-    const task= await this.taskModel.findById(id).populate('assignees') .exec();
+    const task= await this.taskModel.findById(id).populate('createdBy').populate('projectId').populate('assignees') .exec();
     return task;
   }
 

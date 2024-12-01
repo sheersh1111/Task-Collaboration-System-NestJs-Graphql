@@ -1,52 +1,41 @@
-import { Schema, model, Document } from 'mongoose';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/user/schemas/user.schema/user.schema';
 
-// Define the Mongoose interface for Project
-export interface Project extends Document {
-  name: string;
-  description: string;
-  startDate: Date;
-  endDate: Date;
-  createdBy: Types.ObjectId; // MongoDB ObjectId referencing User
-  status: 'todo' | 'in-progress' | 'completed'; // Enum for status
-}
-
-// Define the Mongoose Schema
-export const ProjectSchema = new Schema<Project>({
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to User
-  status: { type: String, enum: ['todo', 'in-progress', 'completed'], default: 'todo' }, // Enum for status
-});
-
-// Export the Mongoose model
-export const ProjectModel = model<Project>('Project', ProjectSchema);
-
-// Define the GraphQL ObjectType for Project
+// Define the Project class
 @ObjectType()
-export class ProjectGraphQL {
+@Schema()
+export class Project extends Document {
+
   @Field(() => ID)
+  @Prop()
   id: string;
 
   @Field()
+  @Prop({ required: true })
   name: string;
 
   @Field()
+  @Prop({ required: true })
   description: string;
 
   @Field()
+  @Prop({ required: true })
   startDate: Date;
 
   @Field()
+  @Prop({ required: true })
   endDate: Date;
 
   @Field(() => User)
-  createdBy: User; // GraphQL ID referencing the User's ObjectId
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  createdBy: User; // Reference to User
 
   @Field()
-  status: string; // GraphQL field for the status
+  @Prop({ enum: ['todo', 'in-progress', 'completed'], default: 'todo' })
+  status: 'todo' | 'in-progress' | 'completed'; // Enum for status
 }
+
+// Generate the Mongoose schema
+export const ProjectSchema = SchemaFactory.createForClass(Project);

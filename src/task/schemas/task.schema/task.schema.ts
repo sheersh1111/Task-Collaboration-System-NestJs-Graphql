@@ -1,47 +1,41 @@
-import { Schema, model, Document } from 'mongoose';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/user/schemas/user.schema/user.schema';
-
-export interface Task extends Document {
-  title: string;
-  description: string;
-  status: string; // e.g., "todo", "in-progress", "completed"
-  createdBy: Schema.Types.ObjectId; // MongoDB ObjectId referencing User
-  assignees: Schema.Types.ObjectId[]; // Array of MongoDB ObjectIds referencing Users
-  projectId: Schema.Types.ObjectId; // MongoDB ObjectId referencing Project
-}
-
-export const TaskSchema = new Schema<Task>({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  status: { type: String, enum: ['todo', 'in-progress', 'completed'], default: 'todo' },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  assignees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: false },
-});
-
-export const TaskModel = model<Task>('Task', TaskSchema);
+import { Project } from 'src/project/schemas/project.schema/project.schema';
 
 @ObjectType()
-export class TaskGraphQL {
+@Schema()
+export class Task extends Document {
+
   @Field(() => ID)
+  @Prop()
   id: string;
 
   @Field()
+  @Prop({ required: true })
   title: string;
 
   @Field()
+  @Prop({ required: true })
   description: string;
 
   @Field()
+  @Prop({ enum: ['todo', 'in-progress', 'completed'], default: 'todo' })
   status: string;
 
-  @Field(() => ID)
-  createdBy: string; // Or use `UserGraphQL` if populated
+  @Field(() => User)
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  createdBy: User; // Reference to User
 
   @Field(() => [User], { nullable: true })
-  assignees: User[]; // Populate as users
+  @Prop({ type: [Types.ObjectId], ref: 'User' })
+  assignees: User[]; // Array of references to Users
 
-  @Field(() => ID)
-  projectId: string; // Or use `ProjectGraphQL` if populated
+  @Field(() => Project, { nullable: true })
+  @Prop({ type: Types.ObjectId, ref: 'Project', required: false })
+  projectId: Project; // Reference to Project
 }
+
+// Generate the Mongoose schema
+export const TaskSchema = SchemaFactory.createForClass(Task);

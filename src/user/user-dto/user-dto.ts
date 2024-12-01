@@ -6,7 +6,7 @@ export class UserDTO {
     email: string;
   
     constructor(user: User) {
-      this.id = user._id.toString();
+      this.id = user?._id as string;
       this.name = user.name;
       this.email = user.email;
     }
