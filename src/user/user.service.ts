@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { User } from './schemas/user.schema/user.schema';
 import { CreateUserInput } from './dto/create-user.input/create-user.input';
 import { SignInInput } from './dto/sign-in.input/sign-in.input/sign-in.input';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -15,6 +14,7 @@ private jwtService:JwtService,
 ) {}
   // Method to fetch all users
   async findAll(): Promise<User[]> { 
+    
     return this.userModel.find().exec();
   }
 

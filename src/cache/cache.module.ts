@@ -9,8 +9,8 @@ import * as redisStore from 'cache-manager-ioredis';
   imports:[
     CacheParentModule.register<RedisOptions>({
       store: redisStore,
-      host: 'localhost', // Redis host
-      port: 6379,        // Redis port
+      host: process.env.REDIS_HOST, // Redis host
+      port: Number(process.env.REDIS_PORT),        // Redis port
       ttl: 60,           // Optional, Time to live for cache items in seconds
     }),
   ],

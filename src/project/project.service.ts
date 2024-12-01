@@ -7,7 +7,7 @@ import { CreateProjectInput } from './dto/create-project.input/create-project-in
 @Injectable()
 export class ProjectService {
   constructor(@InjectModel('Project') private ProjectSchema: Model<Project>
-) {}
+) {} 
 
   async create(createProjectInput: CreateProjectInput): Promise<Project> {
     const createdProject = new this.ProjectSchema(createProjectInput);
