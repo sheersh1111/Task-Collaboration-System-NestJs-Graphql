@@ -70,12 +70,12 @@ export class TaskResolver {
     @Args('id') id: string,
     @Args('updateTaskInput') updateTaskInput: UpdateTaskInput,
     @Args('projectId') projectId:string
-  ): Promise<Task> {
+  ): Promise<TaskDTO> {
     const task:any = await this.taskService.update(id, updateTaskInput);
     task.assignees.map((member)=>{
       this.notificationGateway.sendNotification(member._id.toString(),'You were assigned a task')
     })
-    return task;
+    return new TaskDTO(task);
   }
 
   @Mutation(() => Task)

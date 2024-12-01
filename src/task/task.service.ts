@@ -34,8 +34,8 @@ export class TaskService {
   }
 
   async update(id: string, updateTaskInput: UpdateTaskInput): Promise<Task> {
-    return this.taskModel
-      .findByIdAndUpdate(id, updateTaskInput, { new: true }).populate('assignees')
+    return await this.taskModel
+      .findByIdAndUpdate(id, updateTaskInput, { new: true }).populate('createdBy').populate('projectId').populate('assignees')
       .exec();
   }
 

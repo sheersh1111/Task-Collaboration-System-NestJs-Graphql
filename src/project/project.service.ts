@@ -11,20 +11,20 @@ export class ProjectService {
 
   async create(createProjectInput: CreateProjectInput): Promise<Project> {
     const createdProject = new this.ProjectSchema(createProjectInput);
-    return (await createdProject.save()).populate('createdBy');
+    return await(await createdProject.save()).populate('createdBy');
   }
 
   async findAll(createdBy?: string): Promise<Project[]> {
     const filter = createdBy ? { createdBy } : {}; // Use createdBy if provided, otherwise no filter
-   return this.ProjectSchema.find(filter).populate('createdBy').exec();  
+   return await  this.ProjectSchema.find(filter).populate('createdBy').exec();  
   }
 
   async findOne(id: string): Promise<Project> {
-    return this.ProjectSchema.findById(id).populate('createdBy').exec();
+    return await this.ProjectSchema.findById(id).populate('createdBy').exec();
   }
 
   async update(id: string, updateFields: Partial<CreateProjectInput>): Promise<Project> {
-    return this.ProjectSchema.findByIdAndUpdate(id, updateFields, { new: true });
+    return await this.ProjectSchema.findByIdAndUpdate(id, updateFields, { new: true }).populate('createdBy');
   }  
 
   async remove(id: string): Promise<Project> {

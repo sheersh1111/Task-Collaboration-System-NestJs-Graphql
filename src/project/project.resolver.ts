@@ -18,8 +18,9 @@ export class ProjectResolver {
   @Mutation(() => Project)
   async createProject(
     @Args('createProjectInput') createProjectInput: CreateProjectInput,
-  ): Promise<Project> {
-    return this.projectService.create(createProjectInput);
+  ): Promise<ProjectDTO> {
+    const project =  await this.projectService.create(createProjectInput);
+    return new ProjectDTO(project)
   }
 
   @Query(() => [Project])
@@ -60,9 +61,10 @@ export class ProjectResolver {
   @UseGuards(AuthGuard,ProjectOwnerGuard)
   async updateProject(
     @Args('updateProjectInput') updateProjectInput: UpdateProjectInput,
-  ): Promise<Project> {
+  ): Promise<ProjectDTO> {
     const { id, ...fieldsToUpdate } = updateProjectInput;
-    return this.projectService.update(id, fieldsToUpdate);
+    const project=await this.projectService.update(id, fieldsToUpdate);
+    return new ProjectDTO(project);
   }
 
   @Mutation(() => Project)

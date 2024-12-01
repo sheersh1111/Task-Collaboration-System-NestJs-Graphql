@@ -17,7 +17,6 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
     // Assuming you are passing the userId via a query parameter, JWT, or in the handshake
     const token:any = client.handshake.query.token; // This is just an example; adapt it to your needs
-    console.log(token);
     const user = this.jwtService.verify(token);
     const userId = user.id;
     if (userId) {
@@ -41,7 +40,6 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   // Send a notification to a specific user by their userId (which maps to socket ID)
   sendNotification(userId: string, message: string) {
     const socketId = NotificationGateway.userSocketMap.get(userId);
-    console.log(socketId);
 
     if (socketId) {
       this.server.to(socketId).emit('notification', message);
