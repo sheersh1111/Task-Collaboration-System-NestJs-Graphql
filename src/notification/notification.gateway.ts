@@ -1,7 +1,7 @@
 import { WebSocketGateway, WebSocketServer, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken'; // or any other JWT validation library
+import * as jwt from 'jsonwebtoken';
 
 @WebSocketGateway()
 @Injectable()
@@ -15,11 +15,13 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   // Called when a new client connects
   handleConnection(client: Socket) {
-    // Validate the JWT token from the query parameters (or headers)
-    const token:any = client.handshake.query.token;
+    // Get token from query parameter (can also use headers depending on your client-side implementation)
+    const token: any = client.handshake.query.token;
+    
+    // If token is invalid or not provided, disconnect the client
     if (!token || !this.validateToken(token)) {
       console.log('Invalid token or no token provided, disconnecting client');
-      client.disconnect(); // Disconnect the client if token is invalid
+      client.disconnect();
     } else {
       console.log('Client connected:', client.id);
     }
@@ -33,7 +35,8 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
   // Method to validate the JWT token
   private validateToken(token: string): boolean {
     try {
-      const decoded = jwt.verify(token, 'your_secret_key'); // Use your actual secret key
+      const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'; // Get secret key from environment variable
+      const decoded = jwt.verify(token, secretKey); // Verify token with secret key
       return !!decoded;
     } catch (error) {
       console.error('Token validation failed', error);
@@ -41,13 +44,18 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
     }
   }
 
-  // Method to emit notifications to clients
+  // Method to emit notifications to a specific client
   sendNotification(clientId: string, message: string) {
     this.server.to(clientId).emit('notification', message);
   }
 
-  // Emit notification to all clients
+  // Emit notification to all connected clients
   sendGlobalNotification(message: string) {
     this.server.emit('notification', message);
+  }
+  @SubscribeMessage('send_message')
+  handleMessage(client: Socket, payload: any): void {
+    console.log('Received message from client:', payload); // Log the message body received from the client
+    client.emit('notification', 'Message received successfully'); // Optionally send a response to the client
   }
 }

@@ -8,41 +8,42 @@ import { GuardType } from 'src/access/owner-conditional-guard/guards/guard-type.
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Request } from 'express';
 import { PartialTaskGraphQL } from './patial-task-graphql/patial-task-graphql';
+import { TaskGraphQL } from './schemas/task.schema/task.schema';
 
-@Resolver(() => PartialTaskGraphQL)
+@Resolver(() => TaskGraphQL)
 export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
 
-  @Query(() => [PartialTaskGraphQL])
+  @Query(() => [TaskGraphQL])
   @UseGuards(AuthGuard,ConditionalPermissionGuard)
   @GuardType('canView') 
   async getAllTasks(@Args('projectId') projectId: string): Promise<PartialTaskGraphQL[]> {
     // Assuming the taskService has a method to find tasks by projectId
-    const tasks = await this.taskService.findAllByProjectId(projectId);
-    return tasks.map((task) => this.mapToGraphQL(task));
+    const tasks:any = await this.taskService.findAllByProjectId(projectId);
+    return tasks;
   }
 
-  @Query(() => PartialTaskGraphQL)
+  @Query(() => TaskGraphQL)
   @UseGuards(AuthGuard,ConditionalPermissionGuard)
   @GuardType('canView') 
   async getTask(@Args('id') id: string,@Args('projectId') projectIs: string): Promise<PartialTaskGraphQL> {
-    const task = await this.taskService.findOne(id);
-    return this.mapToGraphQL(task);
+    const task:any = await this.taskService.findOne(id); 
+    return task
   }
 
-  @Mutation(() => PartialTaskGraphQL)
+  @Mutation(() => TaskGraphQL)
   @UseGuards(AuthGuard,ConditionalPermissionGuard) // Use the main conditional guard
   @GuardType('canCreate') // Specify the guard type
   async createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput,@Context() context:any): Promise<PartialTaskGraphQL> {
     const userId = context.req.user.id; // Assuming user is attached to the request in context
-    const task = await this.taskService.create({
+    const task :any= await this.taskService.create({
       ...createTaskInput,
       createdBy: userId, // Assign the logged-in user's ID
     });
-    return this.mapToGraphQL(task);
+    return task;
   }
 
-  @Mutation(() => PartialTaskGraphQL)
+  @Mutation(() => TaskGraphQL)
   @UseGuards(AuthGuard,ConditionalPermissionGuard) // Use the main conditional guard
   @GuardType('canAssign') // Specify the guard type
   async updateTask(
@@ -50,29 +51,17 @@ export class TaskResolver {
     @Args('updateTaskInput') updateTaskInput: UpdateTaskInput,
     @Args('projectId') projectId:string
   ): Promise<PartialTaskGraphQL> {
-    const task = await this.taskService.update(id, updateTaskInput);
-    console.log(task);
-    
-    return this.mapToGraphQL(task);
+    const task:any = await this.taskService.update(id, updateTaskInput);
+    return task;
   }
 
-  @Mutation(() => PartialTaskGraphQL)
+  @Mutation(() => TaskGraphQL)
   @UseGuards(AuthGuard,ConditionalPermissionGuard) // Use the main conditional guard
   @GuardType('canCreate') // Specify the guard type
   async removeTask(@Args('id') id: string): Promise<PartialTaskGraphQL> {
-    const task = await this.taskService.remove(id);
-    return this.mapToGraphQL(task);
-  }
-
-  private mapToGraphQL(task: any): PartialTaskGraphQL {
-    return {
-      id: task._id.toString(),
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      createdBy: task.createdBy?.toString() || null,
-      assignees: task.assignees?.map((assignee: any) => assignee.toString()) || [],
-      projectId: task.projectId?.toString() || null,
-    };
+    const task:any = await this.taskService.remove(id);
+    return task;
   }
 }
+
+

@@ -14,21 +14,21 @@ export class TaskService {
   }
 
   async findAllByProjectId(projectId: string): Promise<Task[]> {
-    return this.taskModel.find({ projectId }).exec();
+    return this.taskModel.find({ projectId }).populate('assignees').exec();
   }
 
   async findAll(): Promise<Task[]> {
-    return this.taskModel.find().populate('createdBy assignees projectId').exec();
+    return this.taskModel.find().populate('assignees').exec();
   }
 
   async findOne(id: string): Promise<Task> {
-    const task= await this.taskModel.findById(id) .exec();
+    const task= await this.taskModel.findById(id).populate('assignees') .exec();
     return task;
   }
 
   async update(id: string, updateTaskInput: UpdateTaskInput): Promise<Task> {
     return this.taskModel
-      .findByIdAndUpdate(id, updateTaskInput, { new: true })
+      .findByIdAndUpdate(id, updateTaskInput, { new: true }).populate('assignees')
       .exec();
   }
 

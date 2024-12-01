@@ -38,14 +38,14 @@ type Access {
   canView: Boolean!
 }
 
-type PartialTaskGraphQL {
-  id: ID
-  title: String
-  description: String
-  status: String
-  createdBy: ID
-  assignees: [ID!]
-  projectId: ID
+type TaskGraphQL {
+  id: ID!
+  title: String!
+  description: String!
+  status: String!
+  createdBy: ID!
+  assignees: [User!]
+  projectId: ID!
 }
 
 type CommentGraphQL {
@@ -60,8 +60,8 @@ type Query {
   getAllUsers: [User!]!
   getAllProjects(createdBy: String): [ProjectGraphQL!]!
   getProject(id: String!): ProjectGraphQL!
-  getAllTasks(projectId: String!): [PartialTaskGraphQL!]!
-  getTask(id: String!, projectId: String!): PartialTaskGraphQL!
+  getAllTasks(projectId: String!): [TaskGraphQL!]!
+  getTask(id: String!, projectId: String!): TaskGraphQL!
   getAccess(projectId: String!, forUser: String!): Access!
   getCommentsByTask(taskId: String!): [CommentGraphQL!]!
 }
@@ -75,9 +75,9 @@ type Mutation {
   createProject(createProjectInput: CreateProjectInput!): ProjectGraphQL!
   updateProject(updateProjectInput: UpdateProjectInput!): ProjectGraphQL!
   removeProject(projectId: String!): ProjectGraphQL!
-  createTask(createTaskInput: CreateTaskInput!): PartialTaskGraphQL!
-  updateTask(id: String!, updateTaskInput: UpdateTaskInput!, projectId: String!): PartialTaskGraphQL!
-  removeTask(id: String!): PartialTaskGraphQL!
+  createTask(createTaskInput: CreateTaskInput!): TaskGraphQL!
+  updateTask(id: String!, updateTaskInput: UpdateTaskInput!, projectId: String!): TaskGraphQL!
+  removeTask(id: String!): TaskGraphQL!
   createAccess(createAccessInput: CreateAccessInput!): Access!
   updateAccess(projectId: String!, forUser: String!, updateAccessInput: UpdateAccessInput!): Access!
   createComment(createCommentInput: CreateCommentInput!): CommentGraphQL!

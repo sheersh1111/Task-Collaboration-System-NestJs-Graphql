@@ -12,8 +12,6 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [ MongooseModule.forFeature([
     { name: 'Task', schema: TaskSchema },
-    { name: 'User', schema: UserSchema },  // Add User model here
-    { name: 'Project', schema: ProjectSchema }  // Add Project model here
   ]),
   forwardRef(() => UserModule), // Use forwardRef() here
   forwardRef(() => ProjectModule),

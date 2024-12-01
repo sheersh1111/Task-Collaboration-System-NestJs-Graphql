@@ -39,8 +39,8 @@ export class TaskGraphQL {
   @Field(() => ID)
   createdBy: string; // Or use `UserGraphQL` if populated
 
-  @Field(() => [ID], { nullable: true })
-  assignees: string[]; // Populate as users
+  @Field(() => [User], { nullable: true })
+  assignees: User[]; // Populate as users
 
   @Field(() => ID)
   projectId: string; // Or use `ProjectGraphQL` if populated
