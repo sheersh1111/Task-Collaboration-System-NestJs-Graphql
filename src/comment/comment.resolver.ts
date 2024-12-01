@@ -1,18 +1,22 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { CommentService } from './comment.service';
 import { CommentGraphQL } from './dto/create-comment.input/create-comment.input';
 import { CreateCommentInput } from './dto/create-comment.input/create-comment.input';
 import { CurrentUser } from 'src/current-user/current-user.decorator';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Resolver(() => CommentGraphQL)
 export class CommentResolver {
   constructor(private readonly commentsService: CommentService) {}
 
   @Mutation(() => CommentGraphQL)
+  @UseGuards(AuthGuard)
   async createComment(
     @Args('createCommentInput') createCommentInput: CreateCommentInput,
-    @CurrentUser('id') userId: string,
+    @Context() context:any
   ): Promise<CommentGraphQL> {
+    const userId = context.req.user.id;
     const comment = await this.commentsService.create(createCommentInput, userId);
     return {
         ...comment.toObject(),
@@ -32,10 +36,12 @@ export class CommentResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(AuthGuard)
   async deleteComment(
     @Args('id') id: string,
-    @CurrentUser('id') userId: string,
+    @Context() context:any
   ): Promise<boolean> {
+    const userId = context.req.user.id;
     return this.commentsService.deleteComment(id, userId);
   }
 }
