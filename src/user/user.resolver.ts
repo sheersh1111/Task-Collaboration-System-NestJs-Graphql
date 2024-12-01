@@ -33,6 +33,10 @@ export class UserResolver {
   ): Promise<SignInResponse> {
     const { token } = await this.userService.signIn(signInInput);
 
+    if(!token){
+      return {success:false,message:"Invalid-Credential"};
+    }
+
     // Set token in cookies
     context.res.cookie('token', token, {
       httpOnly: true,
