@@ -68,7 +68,6 @@ type Query {
 
 type Mutation {
   createNotification(projectId: String!, userId: String!, message: String!): String!
-  broadcastNotification(message: String!): String!
   createUser(createUserInput: CreateUserInput!): User!
   signIn(signInInput: SignInInput!): SignInResponse!
   signOut: Boolean!

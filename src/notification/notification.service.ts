@@ -14,7 +14,7 @@ export class NotificationService {
   }
 
   // Method to broadcast a notification to all users
-  broadcastNotification(message: string) {
-    this.notificationGateway.sendGlobalNotification(message);
-  }
+  // broadcastNotification(message: string) {
+  //   this.notificationGateway.sendGlobalNotification(message);
+  // }
 }

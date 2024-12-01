@@ -15,9 +15,9 @@ export class NotificationResolver {
     return 'Notification created successfully';
   }
 
-  @Mutation(() => String)
-  async broadcastNotification(@Args('message') message: string): Promise<string> {
-    this.notificationService.broadcastNotification(message);
-    return 'Notification broadcasted successfully';
-  }
+  // @Mutation(() => String)
+  // async broadcastNotification(@Args('message') message: string): Promise<string> {
+  //   this.notificationService.broadcastNotification(message);
+  //   return 'Notification broadcasted successfully';
+  // }
 }

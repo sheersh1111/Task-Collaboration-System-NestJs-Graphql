@@ -9,10 +9,13 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { Request } from 'express';
 import { PartialTaskGraphQL } from './patial-task-graphql/patial-task-graphql';
 import { TaskGraphQL } from './schemas/task.schema/task.schema';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Resolver(() => TaskGraphQL)
 export class TaskResolver {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(private readonly taskService: TaskService,
+    private readonly notificationGateway: NotificationGateway
+  ) {}
 
   @Query(() => [TaskGraphQL])
   @UseGuards(AuthGuard,ConditionalPermissionGuard)
@@ -52,6 +55,9 @@ export class TaskResolver {
     @Args('projectId') projectId:string
   ): Promise<PartialTaskGraphQL> {
     const task:any = await this.taskService.update(id, updateTaskInput);
+    task.assignees.map((member)=>{
+      this.notificationGateway.sendNotification(member._id.toString(),'You were assigned a task')
+    })
     return task;
   }
 

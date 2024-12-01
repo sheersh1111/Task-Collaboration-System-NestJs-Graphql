@@ -8,6 +8,7 @@ import { AccessModule } from 'src/access/access.module';
 import { UserSchema } from 'src/user/schemas/user.schema/user.schema';
 import { ProjectSchema } from 'src/project/schemas/project.schema/project.schema';
 import { UserModule } from 'src/user/user.module';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Module({
   imports: [ MongooseModule.forFeature([
@@ -16,6 +17,7 @@ import { UserModule } from 'src/user/user.module';
   forwardRef(() => UserModule), // Use forwardRef() here
   forwardRef(() => ProjectModule),
 AccessModule],
-  providers: [TaskResolver, TaskService],
+  providers: [TaskResolver, TaskService,NotificationGateway],
+  exports:[TaskService]
 })
 export class TaskModule {}

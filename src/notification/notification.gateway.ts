@@ -1,61 +1,52 @@
-import { WebSocketGateway, WebSocketServer, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Injectable } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
-
-@WebSocketGateway()
+import { Server, Socket } from 'socket.io';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
-export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway()
+export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private readonly jwtService: JwtService) {}
   @WebSocketServer() server: Server;
 
-  // Called when the gateway is initialized
-  afterInit(server: Server) {
-    console.log('Notification Gateway Initialized');
-  }
+  // Static map that persists across all instances of NotificationGateway
+  private static userSocketMap: Map<string, string> = new Map();
 
-  // Called when a new client connects
+  // When a user connects
   handleConnection(client: Socket) {
-    // Get token from query parameter (can also use headers depending on your client-side implementation)
-    const token: any = client.handshake.query.token;
-    
-    // If token is invalid or not provided, disconnect the client
-    if (!token || !this.validateToken(token)) {
-      console.log('Invalid token or no token provided, disconnecting client');
-      client.disconnect();
-    } else {
-      console.log('Client connected:', client.id);
+    console.log(`Client connected: ${client.id}`);
+
+    // Assuming you are passing the userId via a query parameter, JWT, or in the handshake
+    const token:any = client.handshake.query.token; // This is just an example; adapt it to your needs
+    console.log(token);
+    const user = this.jwtService.verify(token);
+    const userId = user.id;
+    if (userId) {
+      // Map the user ID to their socket ID
+      NotificationGateway.userSocketMap.set(userId, client.id);
+      console.log(`Mapped user ${userId} to socket ID ${client.id}`);
     }
   }
 
-  // Called when a client disconnects
+  // When a user disconnect s
   handleDisconnect(client: Socket) {
-    console.log('Client disconnected:', client.id);
+    console.log(`Client disconnected: ${client.id}`);
+    // Remove the user from the map when they disconnect
+    NotificationGateway.userSocketMap.forEach((socketId, userId) => {
+      if (socketId === client.id) {
+        NotificationGateway.userSocketMap.delete(userId);
+      }
+    });
   }
 
-  // Method to validate the JWT token
-  private validateToken(token: string): boolean {
-    try {
-      const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'; // Get secret key from environment variable
-      const decoded = jwt.verify(token, secretKey); // Verify token with secret key
-      return !!decoded;
-    } catch (error) {
-      console.error('Token validation failed', error);
-      return false;
+  // Send a notification to a specific user by their userId (which maps to socket ID)
+  sendNotification(userId: string, message: string) {
+    const socketId = NotificationGateway.userSocketMap.get(userId);
+    console.log(socketId);
+
+    if (socketId) {
+      this.server.to(socketId).emit('notification', message);
+    } else {
+      console.log(`No socket found for user ${userId}`);
     }
-  }
-
-  // Method to emit notifications to a specific client
-  sendNotification(clientId: string, message: string) {
-    this.server.to(clientId).emit('notification', message);
-  }
-
-  // Emit notification to all connected clients
-  sendGlobalNotification(message: string) {
-    this.server.emit('notification', message);
-  }
-  @SubscribeMessage('send_message')
-  handleMessage(client: Socket, payload: any): void {
-    console.log('Received message from client:', payload); // Log the message body received from the client
-    client.emit('notification', 'Message received successfully'); // Optionally send a response to the client
   }
 }

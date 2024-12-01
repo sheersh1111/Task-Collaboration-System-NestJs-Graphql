@@ -5,5 +5,6 @@ import { NotificationResolver } from './notification.resolver';
 
 @Module({
   providers: [NotificationGateway, NotificationService, NotificationResolver],
+  exports:[NotificationGateway,NotificationService]
 })
 export class NotificationModule {}
