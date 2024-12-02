@@ -29,33 +29,33 @@ In case of websocket I am mapping auth token with client socket ID so you will n
         - access service
 
     - cache module
-          - cache service
+        - cache service
 
     - comment module
-          - dto/create-comment-input
-          - schemas/comment.schema
-          - comment resolve
-          - comment service
+        - dto/create-comment-input
+        - schemas/comment.schema
+        - comment resolve
+        - comment service
           
     - notifications module
-          - gateway
-          - resolver
-          - service
+        - gateway
+        - resolver
+        - service
 
     - project module
-          - create and update project dto
-          - project owner guard
-          - project - response dto
-          - schema
+        - create and update project dto
+        - project owner guard
+        - project - response dto
+        - schema
             - project schema
-          - service
-          
+        - service
+
     - task module
-          - task dto
-          - schema 
+        - task dto
+        - schema 
             - task schema
-          - task resolver
-          - task service
+        - task resolver
+        - task service
 
 
     
