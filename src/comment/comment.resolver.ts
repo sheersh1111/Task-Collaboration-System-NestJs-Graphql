@@ -2,7 +2,6 @@ import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { CommentService } from './comment.service';
 import { CommentGraphQL } from './dto/create-comment.input/create-comment.input';
 import { CreateCommentInput } from './dto/create-comment.input/create-comment.input';
-import { CurrentUser } from 'src/current-user/current-user.decorator';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TaskService } from 'src/task/task.service';

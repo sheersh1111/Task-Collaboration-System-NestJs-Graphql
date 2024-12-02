@@ -2,8 +2,8 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { ProjectOwnerGuard } from 'src/project/guards/project-owner/project-owner.guard';// Assumes this is implemented
 import { CanViewGuard } from '../can-view/can-view.guard';
-import { CanAssignGuard } from 'src/can-assign/can-assign.guard';
-import { CanCreateGuard } from 'src/can-create/can-create.guard';
+import { CanAssignGuard } from 'src/access/can-assign/can-assign.guard';
+import { CanCreateGuard } from 'src/access/can-create/can-create.guard';
 import { GuardType } from './guards/guard-type.decorator'; // Import the custom decorator
 import { Reflector } from '@nestjs/core';
 

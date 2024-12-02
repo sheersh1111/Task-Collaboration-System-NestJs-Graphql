@@ -1,3 +1,4 @@
+
 # Link to postman documentation of API's 
 https://documenter.getpostman.com/view/21465485/2sAYBYfVuU
 
@@ -8,6 +9,43 @@ https://documenter.getpostman.com/view/21465485/2sAYBYfVuU
 In case of websocket I am mapping auth token with client socket ID so you will need token in params and event listener of notification in your testing tool.Just like shown in above images. 
 
 
+# Folder Structure
+  - src
+    - main.ts
+    - app module
+    - auth module
+      - auth guard
+    - cache module
+      - cache service
+    - can-create/can-create guard
+    - can-assign/can-assign guard
+    - comment module
+      - dto/create-comment-input
+      - schemas/comment.schema
+      - comment resolve
+      - comment service
+    - current user 
+      - current user decorator
+    - notifications module
+      - gateway
+      - resolver
+      - service
+    - project module
+      - create and update project dto
+      - project owner guard
+      - project - response dto
+      - schema
+        - project schema
+      - service
+    - task module
+      - task dto
+      - schema 
+        - task schema
+      - task resolver
+      - task service
+
+
+    
 
 
 
