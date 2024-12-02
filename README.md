@@ -1,3 +1,20 @@
+# About project
+  This project is based creating new porjects and tasks in those projects. Another user can collaborate on those tasks within his access control rights. For example - If he has been given right to create new tasks in project 1 then he can create new tasks inside that project.
+
+  Comments are also available for each task. 
+  If someone is assigned a task he will get notified about it and also when someone comments on task in which he is associated.
+
+# Technicality of the project
+  I was asked to indpendently chose the idea based on time provided in hiring assignment test. So I came up with this medium level complexity tasks. Which uses -
+  1. NestJs.
+  2. Graphql
+  3. Comprises of different modules like users,projects,tasks,comments,uac(user access control),notification gateways,auth and cache.
+  4. I have used guards for handling access controls(example of dependency injection).
+  5. Also used factory pattern to derive a hibrid guard which changes depending on parameter provided.
+  6. Made use of Adaptor pattern for sending grphql data back without it's generalized errors using DTO's.
+  7. Made use of Notifications gateway and implemented it through new instances in each resolver constructor(A good example of Single Responsibility Proinciple).
+  8. Similarly, I have built my own Cache module on top of Cache Module of redis and nestjs and used it by making new instances in each resolver constructor(This also is a good exmaple of Single Responsibility Principle).
+
 # Steps to run
   Turn on docker and 
   Run `docker-compose up --build`
