@@ -1,3 +1,7 @@
+# Steps to run
+  Turn on docker and 
+  Run `docker-compose up --build`
+  Test on localhost:3000 port for testing API's and websockets.
 
 # Link to postman documentation of API's 
 https://documenter.getpostman.com/view/21465485/2sAYBYfVuU
