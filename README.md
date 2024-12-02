@@ -1,3 +1,17 @@
+# Link to postman documentation of API's 
+https://documenter.getpostman.com/view/21465485/2sAYBYfVuU
+
+# Images for Socket.io connection for notifications
+![comment-update](https://github.com/user-attachments/assets/f703b2e4-079a-4125-99c0-2b906bac84a8)
+![received-task](https://github.com/user-attachments/assets/33db8b55-61ce-4f97-9dbc-76d857b19226)
+
+In case of websocket I am mapping auth token with client socket ID so you will need token in params and event listener of notification in your testing tool.Just like shown in above images. 
+
+
+
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
