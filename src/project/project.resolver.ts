@@ -16,6 +16,7 @@ export class ProjectResolver {
   ) {}
 
   @Mutation(() => Project)
+  @UseGuards(AuthGuard)
   async createProject(
     @Args('createProjectInput') createProjectInput: CreateProjectInput,
   ): Promise<ProjectDTO> {
