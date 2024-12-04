@@ -71,6 +71,8 @@ export class TaskResolver {
     @Args('updateTaskInput') updateTaskInput: UpdateTaskInput,
     @Args('projectId') projectId:string
   ): Promise<TaskDTO> {
+    this.cacheService.delCache('task'+id);
+    this.cacheService.delCache('tasks'+projectId);
     const task:any = await this.taskService.update(id, updateTaskInput);
     task.assignees.map((member)=>{
       this.notificationGateway.sendNotification(member._id.toString(),'You were assigned a task')
@@ -82,6 +84,7 @@ export class TaskResolver {
   @UseGuards(AuthGuard,ConditionalPermissionGuard) // Use the main conditional guard
   @GuardType('canCreate') // Specify the guard type
   async removeTask(@Args('id') id: string): Promise<Task> {
+    this.cacheService.delCache('task'+id);
     const task:any = await this.taskService.remove(id);
     return task;
   }

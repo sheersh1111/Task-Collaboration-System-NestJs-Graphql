@@ -64,6 +64,7 @@ export class ProjectResolver {
     @Args('updateProjectInput') updateProjectInput: UpdateProjectInput,
   ): Promise<ProjectDTO> {
     const { id, ...fieldsToUpdate } = updateProjectInput;
+    this.cacheService.delCache(`project${id}`);
     const project=await this.projectService.update(id, fieldsToUpdate);
     return new ProjectDTO(project);
   }
@@ -71,6 +72,7 @@ export class ProjectResolver {
   @Mutation(() => Project)
   @UseGuards(AuthGuard,ProjectOwnerGuard)
   async removeProject(@Args('projectId') projectId: string): Promise<Project> {
+    this.cacheService.delCache(`project${projectId}`);
     return this.projectService.remove(projectId);
   }
 }
